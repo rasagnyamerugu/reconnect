@@ -1,5 +1,4 @@
 import LostFoundSign from "../components/LostFoundSign";
-import { Smartphone, Wallet, KeyRound, Laptop, Backpack, BookOpen, CreditCard } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   PackageSearch, PackageCheck, Zap, ShieldCheck, MessageCircle,
@@ -7,8 +6,6 @@ import {
   Smartphone, Wallet, KeyRound, Laptop, Backpack, BookOpen, CreditCard,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import LostFoundSign from "../components/LostFoundSign";
-
 const steps = [
   { icon: PackageSearch, title: "Report", text: "Post a lost or found item with a photo, place and date." },
   { icon: Sparkles, title: "Match", text: "Our engine scores every report against the others." },
@@ -73,7 +70,7 @@ export default function Home() {
           <div className="relative hidden md:flex md:justify-center">
             <LostFoundSign className="w-80 rotate-3 animate-float drop-shadow-2xl" />
 
-            <div className="absolute -left-4 bottom-10 flex items-center gap-3 rounded-2xl bg-white p-3 text-slate-800 shadow-2xl">
+            <div className="absolute -bottom-6 -left-10 flex items-center gap-3 rounded-2xl bg-white p-3 text-slate-800 shadow-2xl">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
                 <Sparkles className="h-5 w-5" />
               </span>
@@ -82,8 +79,7 @@ export default function Home() {
                 <p className="text-xs text-slate-500">Black wallet, 92%</p>
               </div>
             </div>
-
-            <div className="absolute -right-2 top-6 flex items-center gap-3 rounded-2xl bg-white p-3 text-slate-800 shadow-2xl">
+            <div className="absolute -right-8 -top-4 flex items-center gap-3 rounded-2xl bg-white p-3 text-slate-800 shadow-2xl">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
                 <Bell className="h-5 w-5" />
               </span>
