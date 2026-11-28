@@ -4,12 +4,13 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
-
+import notificationRoutes from "./routes/notificationRoutes.js";
 const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(express.json());
 app.use("/api/items", itemRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/auth", authRoutes);
 
 app.get("/api/health", (req, res) => {

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Item from "../models/Item.js";
 import cloudinary from "../config/cloudinary.js";
+import { findMatches, notifyMatches } from "../utils/matchService.js";
 
 const uploadBuffer = (buffer) =>
   new Promise((resolve, reject) => {
@@ -52,6 +53,12 @@ export const createItem = async (req, res) => {
       verificationQuestion: type === "found" ? verificationQuestion : "",
       verificationAnswer: type === "found" ? verificationAnswer?.trim().toLowerCase() : "",
     });
+
+          try {
+      await notifyMatches(item);
+    } catch (matchErr) {
+      console.error("Matching failed:", matchErr.message);
+    }
 
     res.status(201).json(item);
   } catch (err) {
@@ -153,6 +160,24 @@ export const deleteItem = async (req, res) => {
 
     await item.deleteOne();
     res.json({ message: "Report deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+export const getMatches = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid item id" });
+    }
+    const item = await Item.findById(req.params.id);
+    if (!item) return res.status(404).json({ message: "Item not found" });
+
+    if (String(item.reportedBy) !== String(req.user._id)) {
+      return res.status(403).json({ message: "Only the reporter can see matches" });
+    }
+
+    const matches = await findMatches(item, 10);
+    res.json(matches.map((m) => ({ item: m.item, score: m.score, reasons: m.reasons })));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, Calendar, Package, Trash2, User, ShieldCheck } from 
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { fmtDate } from "../constants";
+import MatchList from "../components/MatchList";
 
 export default function ItemDetail() {
   const { id } = useParams();
@@ -14,6 +15,8 @@ export default function ItemDetail() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
+    setItem(null);
+    setActive(0);
     api
       .get(`/items/${id}`)
       .then((res) => setItem(res.data))
@@ -34,7 +37,7 @@ export default function ItemDetail() {
   if (!item) return <p className="p-12 text-center text-slate-500">Loading...</p>;
 
   const isLost = item.type === "lost";
-  const isOwner = item.reportedBy?._id === user?.id;
+  const isOwner = String(item.reportedBy?._id) === String(user?.id);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
@@ -54,7 +57,11 @@ export default function ItemDetail() {
           {item.images?.length > 1 && (
             <div className="mt-3 flex gap-3">
               {item.images.map((src, i) => (
-                <button key={src} onClick={() => setActive(i)} className={`h-16 w-16 overflow-hidden rounded-lg border-2 ${active === i ? "border-indigo-600" : "border-transparent"}`}>
+                <button
+                  key={src}
+                  onClick={() => setActive(i)}
+                  className={`h-16 w-16 overflow-hidden rounded-lg border-2 ${active === i ? "border-indigo-600" : "border-transparent"}`}
+                >
                   <img src={src} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
@@ -67,7 +74,9 @@ export default function ItemDetail() {
             <span className={`rounded-full px-3 py-1 text-xs font-semibold text-white ${isLost ? "bg-rose-500" : "bg-emerald-500"}`}>
               {isLost ? "Lost" : "Found"}
             </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium capitalize text-slate-600">{item.status}</span>
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium capitalize text-slate-600">
+              {item.status}
+            </span>
           </div>
 
           <h1 className="mt-3 font-display text-3xl font-bold text-slate-900">{item.title}</h1>
@@ -106,6 +115,8 @@ export default function ItemDetail() {
           </div>
         </div>
       </div>
+
+      {isOwner && <MatchList itemId={item._id} />}
     </div>
   );
 }

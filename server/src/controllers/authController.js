@@ -47,7 +47,7 @@ export const login = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 export const getMe = async (req, res) => {
-  res.json({ user: req.user });
+  const { _id, name, email, role, community, trustScore } = req.user;
+  res.json({ user: { id: _id, name, email, role, community, trustScore } });
 };
